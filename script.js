@@ -16,12 +16,20 @@ function fetchWeather(city) {
 
             if (!city) {
                 reject("City name is missing");
-            }
-            else if (weatherData[city] === undefined) {
-                reject("City not found");
-            }
-            else {
-                resolve(weatherData[city]);
+            } else {
+
+                let cityName = Object.keys(weatherData).find(
+                    name => name.toLowerCase() === city.toLowerCase()
+                );
+
+                if (cityName === undefined) {
+                    reject("City not found");
+                } else {
+                    resolve({
+                        city: cityName,
+                        temperature: weatherData[cityName]
+                    });
+                }
             }
 
         }, 1000);
