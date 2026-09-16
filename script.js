@@ -7,7 +7,6 @@ const weatherData = {
     Paris: 18
 };
 
-
 // Simulated API
 function fetchWeather(city) {
     return new Promise((resolve, reject) => {
@@ -36,7 +35,6 @@ function fetchWeather(city) {
     });
 }
 
-
 // Async function
 async function getWeather(city) {
 
@@ -44,12 +42,20 @@ async function getWeather(city) {
 
         let temperature = await fetchWeather(city);
 
-        console.log(`Temperature in ${city} is ${temperature}°C`);
+        let message = `Temperature in ${temperature.city} is ${temperature.temperature}°C`;
+
+        console.log(message);
+
+        document.getElementById("result").innerHTML = message;
 
     }
     catch (error) {
 
-        console.log(`Failed to fetch weather: ${error}`);
+        let message = `Failed to fetch weather: ${error}`;
+
+        console.log(message);
+
+        document.getElementById("result").innerHTML = message;
 
     }
     finally {
@@ -59,12 +65,10 @@ async function getWeather(city) {
     }
 }
 
-
 // Function called by HTML button
 function checkWeather() {
 
     let city = document.getElementById("city").value;
 
     getWeather(city);
-
 }
