@@ -1,10 +1,62 @@
-function validateProductCode(productCode) {
+// Mock weather data
+const weatherData = {
+    Sydney: 28,
+    London: 15,
+    Tokyo: 22,
+    Bangalore: 25,
+    Paris: 18
+};
 
-    let pattern = /^#[A-Z]{4}[0-9]{3}$/;
 
-    if (pattern.test(productCode)) {
-        return "Product code verified successfully";
-    } else {
-        return "Product code is not valid";
+// Simulated API
+function fetchWeather(city) {
+    return new Promise((resolve, reject) => {
+
+        setTimeout(() => {
+
+            if (!city) {
+                reject("City name is missing");
+            }
+            else if (weatherData[city] === undefined) {
+                reject("City not found");
+            }
+            else {
+                resolve(weatherData[city]);
+            }
+
+        }, 1000);
+    });
+}
+
+
+// Async function
+async function getWeather(city) {
+
+    try {
+
+        let temperature = await fetchWeather(city);
+
+        console.log(`Temperature in ${city} is ${temperature}°C`);
+
     }
+    catch (error) {
+
+        console.log(`Failed to fetch weather: ${error}`);
+
+    }
+    finally {
+
+        console.log("Weather check completed");
+
+    }
+}
+
+
+// Function called by HTML button
+function checkWeather() {
+
+    let city = document.getElementById("city").value;
+
+    getWeather(city);
+
 }
