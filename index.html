@@ -3,11 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Home Appliance Control</title>
+  <title>Form Validation</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    form { max-width: 400px; }
+    label, input { display: block; margin-top: 10px; }
+    input { width: 100%; padding: 8px; box-sizing: border-box; }
+    .error { color: red; font-size: 14px; }
+    .success { color: green; font-weight: bold; }
+    button { margin-top: 18px; padding: 8px 14px; }
+  </style>
 </head>
 <body>
-  <h1>Smart Home Appliance Control</h1>
-  <p>Open the browser console to view the appliance operation output.</p>
+  <h1>Registration Form</h1>
+
+  <form id="registrationForm" novalidate>
+    <label for="name">Name</label>
+    <input type="text" id="name">
+    <span id="nameError" class="error"></span>
+
+    <label for="email">Email</label>
+    <input type="text" id="email">
+    <span id="emailError" class="error"></span>
+
+    <label for="password">Password</label>
+    <input type="password" id="password">
+    <span id="passwordError" class="error"></span>
+
+    <label for="confirmPassword">Confirm Password</label>
+    <input type="password" id="confirmPassword">
+    <span id="confirmPasswordError" class="error"></span>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <p id="successMessage" class="success"></p>
 
   <script src="script.js"></script>
 </body>
