@@ -1,56 +1,75 @@
 "use strict";
 
-const TV = {
-  name: "TV",
-  isTurnedOn: false
-};
+const form = document.getElementById("registrationForm");
 
-const Lamp = {
-  name: "Lamp",
-  isTurnedOn: false
-};
+const nameInput = document.getElementById("name");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const confirmPasswordInput = document.getElementById("confirmPassword");
 
-const Oven = {
-  name: "Oven",
-  isTurnedOn: false
-};
+const nameError = document.getElementById("nameError");
+const emailError = document.getElementById("emailError");
+const passwordError = document.getElementById("passwordError");
+const confirmPasswordError = document.getElementById("confirmPasswordError");
+const successMessage = document.getElementById("successMessage");
 
-function turnOnAppliance(appliance) {
-  try {
-    if (appliance.isTurnedOn) {
-      throw new Error(`${appliance.name} is already ON.`);
-    }
+function clearMessages() {
+  nameError.textContent = "";
+  emailError.textContent = "";
+  passwordError.textContent = "";
+  confirmPasswordError.textContent = "";
+  successMessage.textContent = "";
+}
 
-    appliance.isTurnedOn = true;
-    return `${appliance.name} has been turned ON.`;
-  } catch (error) {
-    return error.message;
-  } finally {
-    console.log("Turn-on operation completed.");
+function validateForm(event) {
+  event.preventDefault();
+  clearMessages();
+
+  let isValid = true;
+
+  const name = nameInput.value.trim();
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+  const confirmPassword = confirmPasswordInput.value;
+
+  if (name === "") {
+    nameError.textContent = "Name is required.";
+    isValid = false;
+  }
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (email === "") {
+    emailError.textContent = "Email is required.";
+    isValid = false;
+  } else if (!emailPattern.test(email)) {
+    emailError.textContent = "Enter a valid email address.";
+    isValid = false;
+  }
+
+  const passwordPattern = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+  if (password === "") {
+    passwordError.textContent = "Password is required.";
+    isValid = false;
+  } else if (!passwordPattern.test(password)) {
+    passwordError.textContent =
+      "Password must have at least 8 characters, one uppercase letter, and one number.";
+    isValid = false;
+  }
+
+  if (confirmPassword === "") {
+    confirmPasswordError.textContent = "Confirm Password is required.";
+    isValid = false;
+  } else if (confirmPassword !== password) {
+    confirmPasswordError.textContent = "Passwords do not match.";
+    isValid = false;
+  }
+
+  if (isValid) {
+    successMessage.textContent = "Form submitted successfully!";
+    form.reset();
   }
 }
 
-function turnOffAppliance(appliance) {
-  try {
-    if (!appliance.isTurnedOn) {
-      throw new Error(`${appliance.name} is already OFF.`);
-    }
-
-    appliance.isTurnedOn = false;
-    return `${appliance.name} has been turned OFF.`;
-  } catch (error) {
-    return error.message;
-  } finally {
-    console.log("Turn-off operation completed.");
-  }
-}
-
-console.log(turnOnAppliance(TV));
-console.log(turnOnAppliance(Lamp));
-console.log(turnOnAppliance(Oven));
-
-console.log(turnOffAppliance(TV));
-console.log(turnOffAppliance(Lamp));
-console.log(turnOffAppliance(Oven));
-
-console.log(turnOffAppliance(TV));
+form.addEventListener("submit", validateForm);
