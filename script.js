@@ -2,26 +2,26 @@
 
 const TV = {
   name: "TV",
-  isOn: false
+  isTurnedOn: false
 };
 
 const Lamp = {
   name: "Lamp",
-  isOn: false
+  isTurnedOn: false
 };
 
 const Oven = {
   name: "Oven",
-  isOn: false
+  isTurnedOn: false
 };
 
 function turnOnAppliance(appliance) {
   try {
-    if (appliance.isOn) {
+    if (appliance.isTurnedOn) {
       throw new Error(`${appliance.name} is already ON.`);
     }
 
-    appliance.isOn = true;
+    appliance.isTurnedOn = true;
     return `${appliance.name} has been turned ON.`;
   } catch (error) {
     return error.message;
@@ -32,11 +32,11 @@ function turnOnAppliance(appliance) {
 
 function turnOffAppliance(appliance) {
   try {
-    if (!appliance.isOn) {
+    if (!appliance.isTurnedOn) {
       throw new Error(`${appliance.name} is already OFF.`);
     }
 
-    appliance.isOn = false;
+    appliance.isTurnedOn = false;
     return `${appliance.name} has been turned OFF.`;
   } catch (error) {
     return error.message;
