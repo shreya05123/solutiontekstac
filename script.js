@@ -1,74 +1,80 @@
-// Mock weather data
-const weatherData = {
-    Sydney: 28,
-    London: 15,
-    Tokyo: 22,
-    Bangalore: 25,
-    Paris: 18
-};
+"use strict";
 
-// Simulated API
-function fetchWeather(city) {
-    return new Promise((resolve, reject) => {
+const creditCards = [];
+const url = "https://webapps.tekstac.com/WebAPI/CreditCardsXMLServlet";
 
-        setTimeout(() => {
+const status = document.getElementById("status");
+const report = document.getElementById("report");
+const retrieveButton = document.getElementById("retrieveButton");
 
-            if (!city) {
-                reject("City name is missing");
-            } else {
+function getText(element, tagNames) {
+  const child = Array.from(element.children).find((item) =>
+    tagNames.includes(item.tagName.toLowerCase())
+  );
 
-                let cityName = Object.keys(weatherData).find(
-                    name => name.toLowerCase() === city.toLowerCase()
-                );
-
-                if (cityName === undefined) {
-                    reject("City not found");
-                } else {
-                    resolve({
-                        city: cityName,
-                        temperature: weatherData[cityName]
-                    });
-                }
-            }
-
-        }, 1000);
-    });
+  return child ? child.textContent.trim() : "Not available";
 }
 
-// Async function
-async function getWeather(city) {
+function displayReport() {
+  const table = document.createElement("table");
 
-    try {
+  table.innerHTML = `
+    <tr>
+      <th>Card Name</th>
+      <th>Card Type</th>
+      <th>Credit Limit</th>
+      <th>Expiry Date</th>
+    </tr>
+  `;
 
-        let temperature = await fetchWeather(city);
+  creditCards.forEach((card) => {
+    const row = table.insertRow();
 
-        let message = `Temperature in ${temperature.city} is ${temperature.temperature}°C`;
+    row.insertCell().textContent = card.name;
+    row.insertCell().textContent = card.type;
+    row.insertCell().textContent = card.limit;
+    row.insertCell().textContent = card.expiryDate;
+  });
 
-        console.log(message);
-
-        document.getElementById("result").innerHTML = message;
-
-    }
-    catch (error) {
-
-        let message = `Failed to fetch weather: ${error}`;
-
-        console.log(message);
-
-        document.getElementById("result").innerHTML = message;
-
-    }
-    finally {
-
-        console.log("Weather check completed");
-
-    }
+  report.replaceChildren(table);
+  status.textContent = "Report generated successfully!!!";
 }
 
-// Function called by HTML button
-function checkWeather() {
+function retrieveCreditCards() {
+  const request = new XMLHttpRequest();
 
-    let city = document.getElementById("city").value;
+  request.open("GET", url, true);
 
-    getWeather(city);
+  request.onreadystatechange = function () {
+    if (request.readyState === 4 && request.status === 200) {
+      const xml = request.responseXML;
+      const cards = Array.from(xml.getElementsByTagName("creditcard"));
+
+      creditCards.length = 0;
+
+      cards.forEach((card) => {
+        creditCards.push({
+          name: getText(card, ["cardname", "name"]),
+          type: getText(card, ["cardtype", "type"]),
+          limit: getText(card, ["cardlimit", "creditlimit", "limit"]),
+          expiryDate: getText(card, ["expirydate", "expiry"])
+        });
+      });
+
+      if (creditCards.length === 16) {
+        status.textContent = "Data retrieved successfully.";
+        displayReport();
+      } else {
+        status.textContent = `Expected 16 records, but received ${creditCards.length}.`;
+      }
+    }
+  };
+
+  request.onerror = function () {
+    status.textContent = "Unable to retrieve data.";
+  };
+
+  request.send();
 }
+
+retrieveButton.addEventListener("click", retrieveCreditCards);
