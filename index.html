@@ -3,24 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Credit Card Limit Check</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 40px; }
-    h1 { color: #1d4ed8; }
-    button { padding: 10px 16px; background: #1d4ed8; color: white; border: 0; border-radius: 4px; cursor: pointer; }
-    #status { font-weight: bold; margin: 18px 0; }
-    table { border-collapse: collapse; margin-top: 16px; min-width: 650px; }
-    th, td { border: 1px solid #cbd5e1; padding: 10px 14px; text-align: left; }
-    th { background: #dbeafe; }
-    tr:nth-child(even) { background: #f8fafc; }
-  </style>
+  <title>Student Score Records</title>
 </head>
 <body>
-  <h1>Credit Card Limit Check</h1>
+  <h1>Student Score Records</h1>
 
-  <button id="retrieveButton">Retrieve Credit Card Data</button>
-  <p id="status"></p>
-  <div id="report"></div>
+  <form id="studentForm">
+    <label for="studentName">Student Name:</label>
+    <input type="text" id="studentName">
+
+    <br><br>
+
+    <label for="studentScore">Score:</label>
+    <input type="number" id="studentScore" step="any">
+
+    <br><br>
+
+    <button type="submit">Add Record</button>
+  </form>
+
+  <p id="message"></p>
+
+  <h2>Student Records</h2>
+  <ul id="studentList"></ul>
 
   <script src="script.js"></script>
 </body>
