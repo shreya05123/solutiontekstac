@@ -1,74 +1,56 @@
 "use strict";
 
-const students = [];
+const TV = {
+  name: "TV",
+  isOn: false
+};
 
-const form = document.getElementById("studentForm");
-const nameInput = document.getElementById("studentName");
-const scoreInput = document.getElementById("studentScore");
-const message = document.getElementById("message");
-const studentList = document.getElementById("studentList");
+const Lamp = {
+  name: "Lamp",
+  isOn: false
+};
 
-function updateAverage() {
-  if (students.length === 0) {
-    message.textContent = "No student records available.";
-    return;
+const Oven = {
+  name: "Oven",
+  isOn: false
+};
+
+function turnOnAppliance(appliance) {
+  try {
+    if (appliance.isOn) {
+      throw new Error(`${appliance.name} is already ON.`);
+    }
+
+    appliance.isOn = true;
+    return `${appliance.name} has been turned ON.`;
+  } catch (error) {
+    return error.message;
+  } finally {
+    console.log("Turn-on operation completed.");
   }
-
-  const total = students.reduce((sum, student) => sum + student.score, 0);
-  const average = total / students.length;
-
-  message.textContent = `Current average score: ${average.toFixed(2)}`;
 }
 
-function displayStudents() {
-  studentList.innerHTML = "";
+function turnOffAppliance(appliance) {
+  try {
+    if (!appliance.isOn) {
+      throw new Error(`${appliance.name} is already OFF.`);
+    }
 
-  students.forEach((student, index) => {
-    const listItem = document.createElement("li");
-
-    listItem.textContent = `${student.name} - ${student.score}`;
-
-    listItem.addEventListener("dblclick", function () {
-      students.splice(index, 1);
-      displayStudents();
-      updateAverage();
-    });
-
-    studentList.appendChild(listItem);
-  });
+    appliance.isOn = false;
+    return `${appliance.name} has been turned OFF.`;
+  } catch (error) {
+    return error.message;
+  } finally {
+    console.log("Turn-off operation completed.");
+  }
 }
 
-function handleFormSubmission(event) {
-  event.preventDefault();
+console.log(turnOnAppliance(TV));
+console.log(turnOnAppliance(Lamp));
+console.log(turnOnAppliance(Oven));
 
-  const name = nameInput.value.trim();
-  const scoreValue = scoreInput.value.trim();
-  const score = Number(scoreValue);
+console.log(turnOffAppliance(TV));
+console.log(turnOffAppliance(Lamp));
+console.log(turnOffAppliance(Oven));
 
-  if (name === "" || scoreValue === "") {
-    message.textContent = "Error: Student name and score cannot be empty.";
-    return;
-  }
-
-  if (Number.isNaN(score)) {
-    message.textContent = "Error: Score must be a valid number.";
-    return;
-  }
-
-  if (score < 0) {
-    message.textContent = "Error: Score cannot be negative.";
-    return;
-  }
-
-  students.push({
-    name: name,
-    score: score
-  });
-
-  form.reset();
-  displayStudents();
-  updateAverage();
-}
-
-form.addEventListener("submit", handleFormSubmission);
-updateAverage();
+console.log(turnOffAppliance(TV));
