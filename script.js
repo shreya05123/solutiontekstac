@@ -20,7 +20,7 @@ function displayReport() {
 
   table.innerHTML = `
     <tr>
-      <th>Card Name</th>
+      <th>Card Holder Name</th>
       <th>Card Type</th>
       <th>Credit Limit</th>
       <th>Expiry Date</th>
@@ -54,7 +54,7 @@ function retrieveCreditCards() {
 
       cards.forEach((card) => {
         creditCards.push({
-          name: getText(card, ["cardname", "name"]),
+          name: getText(card, ["cardholdername", "cardname", "name"]),
           type: getText(card, ["cardtype", "type"]),
           limit: getText(card, ["cardlimit", "creditlimit", "limit"]),
           expiryDate: getText(card, ["expirydate", "expiry"])
