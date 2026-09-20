@@ -1,80 +1,74 @@
 "use strict";
 
-const creditCards = [];
-const url = "https://webapps.tekstac.com/WebAPI/CreditCardsXMLServlet";
+const students = [];
 
-const status = document.getElementById("status");
-const report = document.getElementById("report");
-const retrieveButton = document.getElementById("retrieveButton");
+const form = document.getElementById("studentForm");
+const nameInput = document.getElementById("studentName");
+const scoreInput = document.getElementById("studentScore");
+const message = document.getElementById("message");
+const studentList = document.getElementById("studentList");
 
-function getText(element, tagNames) {
-  const child = Array.from(element.children).find((item) =>
-    tagNames.includes(item.tagName.toLowerCase())
-  );
+function updateAverage() {
+  if (students.length === 0) {
+    message.textContent = "No student records available.";
+    return;
+  }
 
-  return child ? child.textContent.trim() : "Not available";
+  const total = students.reduce((sum, student) => sum + student.score, 0);
+  const average = total / students.length;
+
+  message.textContent = `Current average score: ${average.toFixed(2)}`;
 }
 
-function displayReport() {
-  const table = document.createElement("table");
+function displayStudents() {
+  studentList.innerHTML = "";
 
-  table.innerHTML = `
-    <tr>
-      <th>Card Holder Name</th>
-      <th>Card Type</th>
-      <th>Credit Limit</th>
-      <th>Expiry Date</th>
-    </tr>
-  `;
+  students.forEach((student, index) => {
+    const listItem = document.createElement("li");
 
-  creditCards.forEach((card) => {
-    const row = table.insertRow();
+    listItem.textContent = `${student.name} - ${student.score}`;
 
-    row.insertCell().textContent = card.name;
-    row.insertCell().textContent = card.type;
-    row.insertCell().textContent = card.limit;
-    row.insertCell().textContent = card.expiryDate;
+    listItem.addEventListener("dblclick", function () {
+      students.splice(index, 1);
+      displayStudents();
+      updateAverage();
+    });
+
+    studentList.appendChild(listItem);
+  });
+}
+
+function handleFormSubmission(event) {
+  event.preventDefault();
+
+  const name = nameInput.value.trim();
+  const scoreValue = scoreInput.value.trim();
+  const score = Number(scoreValue);
+
+  if (name === "" || scoreValue === "") {
+    message.textContent = "Error: Student name and score cannot be empty.";
+    return;
+  }
+
+  if (Number.isNaN(score)) {
+    message.textContent = "Error: Score must be a valid number.";
+    return;
+  }
+
+  if (score < 0) {
+    message.textContent = "Error: Score cannot be negative.";
+    return;
+  }
+
+  students.push({
+    name: name,
+    score: score
   });
 
-  report.replaceChildren(table);
-  status.textContent = "Report generated successfully!!!";
+  form.reset();
+  displayStudents();
+  updateAverage();
 }
 
-function retrieveCreditCards() {
-  const request = new XMLHttpRequest();
-
-  request.open("GET", url, true);
-
-  request.onreadystatechange = function () {
-    if (request.readyState === 4 && request.status === 200) {
-      const xml = request.responseXML;
-      const cards = Array.from(xml.getElementsByTagName("creditcard"));
-
-      creditCards.length = 0;
-
-      cards.forEach((card) => {
-        creditCards.push({
-          name: getText(card, ["cardholdername", "cardname", "name"]),
-          type: getText(card, ["cardtype", "type"]),
-          limit: getText(card, ["cardlimit", "creditlimit", "limit"]),
-          expiryDate: getText(card, ["expirydate", "expiry"])
-        });
-      });
-
-      if (creditCards.length === 16) {
-        status.textContent = "Data retrieved successfully.";
-        displayReport();
-      } else {
-        status.textContent = `Expected 16 records, but received ${creditCards.length}.`;
-      }
-    }
-  };
-
-  request.onerror = function () {
-    status.textContent = "Unable to retrieve data.";
-  };
-
-  request.send();
-}
-
-retrieveButton.addEventListener("click", retrieveCreditCards);
+form.addEventListener("submit", handleFormSubmission);
+updateAverage();
